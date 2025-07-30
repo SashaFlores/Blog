@@ -1,6 +1,36 @@
+# See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
+
 [profile.default]
 src = "src"
-out = "out"
+out = "artifacts"
 libs = ["lib"]
+extra_output = ["storageLayout"]
 
-# See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
+solc_version = "0.8.28"
+evm_version = "cancun"
+ffi = true
+ast = true
+build_info = true
+fs_permissions = [{ access = "read-write", path = ".forge-snapshots/" }]
+fuzz_runs = 10_000
+
+auto_detect_remappings = true
+
+[fmt]
+# These are all the `forge fmt` defaults.
+line_length = 120
+tab_width = 4
+bracket_spacing = false
+int_types = 'long'
+multiline_func_header = 'attributes_first'
+quote_style = 'double'
+number_underscore = 'preserve'
+single_line_statement_blocks = 'preserve'
+ignore = ["src/console.sol", "src/console2.sol"]
+
+
+remappings = [
+    "forge-std/=lib/forge-std/src",
+    "@openzeppelin/contracts/=lib/openzeppelin-contracts-upgradeable/lib/openzeppelin-contracts/contracts",
+]
+
