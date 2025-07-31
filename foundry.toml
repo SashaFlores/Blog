@@ -6,6 +6,7 @@ out = "out"
 libs = ["lib"]
 extra_output = ["storageLayout"]
 gas_reports = ['*']
+# dynamic_test_linking = true
 
 solc_version = "0.8.28"
 evm_version = "cancun"

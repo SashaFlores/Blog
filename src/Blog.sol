@@ -34,17 +34,7 @@ contract Blog is IBlog, Initializable, UUPSUpgradeable, OwnableUpgradeable, Paus
     bytes32 public constant STANDARD = bytes32(uint256(1));
     bytes32 public constant PREMIUM = bytes32(uint256(2));
 
-    error InvalidNewFee();
-    error EmptyBalance();
-    error WithdrawalFailedNoData();
-    error LessThanPremiumFee(uint256 requiredFee);
-    error InvalidTokenId();
-    error NonTransferrable();
-    error ContractNameChanged();
-
-    event FundsReceived(address indexed sender, uint256 amount);
-    event FundsWithdrawn(address indexed recipient, uint256 amount);
-    event PremiumReceived(address indexed sender, string tokenURI);
+    
 
 
     /// @custom:oz-upgrades-unsafe-allow constructor

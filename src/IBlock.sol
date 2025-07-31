@@ -2,6 +2,20 @@
 pragma solidity ^0.8.28;
 
 interface IBlog {
+
+    error InvalidNewFee();
+    error EmptyBalance();
+    error WithdrawalFailedNoData();
+    error LessThanPremiumFee(uint256 requiredFee);
+    error InvalidTokenId();
+    error NonTransferrable();
+    error ContractNameChanged();
+
+    event FundsReceived(address indexed sender, uint256 amount);
+    event FundsWithdrawn(address indexed recipient, uint256 amount);
+    event PremiumReceived(address indexed sender, string tokenURI);
+
+    
     function mint() external payable;
     function mintPremium(string calldata tokenURI) external payable;
     function getPremiumFee() external view returns (uint256);
