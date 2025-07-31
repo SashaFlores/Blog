@@ -2,24 +2,36 @@
 
 [profile.default]
 src = "src"
-out = "artifacts"
+out = "out"
 libs = ["lib"]
 extra_output = ["storageLayout"]
+gas_reports = ['*']
 
 solc_version = "0.8.28"
 evm_version = "cancun"
 ffi = true
 ast = true
 build_info = true
-fs_permissions = [{ access = "read-write", path = ".forge-snapshots/" }]
-fuzz_runs = 10_000
+fs_permissions = [
+    { access = "read-write", path = ".forge-snapshots/" },
+    { access = "read-write", path = "./out/" }
+]
 
-auto_detect_remappings = true
+[fuzz]
+runs = 10_000
+max_test_rejects = 50_000
+include_storage = true
+
+[invariant]
+runs = 1_000
+depth = 500
+fail_on_revert = false
+
 
 [fmt]
 # These are all the `forge fmt` defaults.
 line_length = 120
-tab_width = 4
+tab_width = 2
 bracket_spacing = false
 int_types = 'long'
 multiline_func_header = 'attributes_first'
@@ -28,7 +40,7 @@ number_underscore = 'preserve'
 single_line_statement_blocks = 'preserve'
 ignore = ["src/console.sol", "src/console2.sol"]
 
-
+auto_detect_remappings = true
 remappings = [
     "forge-std/=lib/forge-std/src",
     "@openzeppelin/contracts/=lib/openzeppelin-contracts-upgradeable/lib/openzeppelin-contracts/contracts",
