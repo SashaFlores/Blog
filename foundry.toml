@@ -8,8 +8,8 @@ extra_output = ["storageLayout"]
 gas_reports = ['*']
 # dynamic_test_linking = true
 
-solc_version = "0.8.28"
-evm_version = "cancun"
+solc_version = "0.8.30"
+evm_version = "prague"
 ffi = true
 ast = true
 build_info = true

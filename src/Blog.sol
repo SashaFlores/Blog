@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.28;
+pragma solidity 0.8.30;
 
 import { Initializable, UUPSUpgradeable } from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import { OwnableUpgradeable } from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
@@ -7,7 +7,7 @@ import { PausableUpgradeable } from "@openzeppelin/contracts-upgradeable/utils/P
 import { ReentrancyGuardUpgradeable } from "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import { ERC1155Upgradeable } from "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol";
 import { ERC1155SupplyUpgradeable } from "@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/ERC1155SupplyUpgradeable.sol";
-import { IBlog } from "./IBlock.sol";
+import { IBlog } from "./IBlog.sol";
 
 
 
@@ -15,9 +15,8 @@ contract Blog is IBlog, Initializable, UUPSUpgradeable, OwnableUpgradeable, Paus
     
 
     /// @custom:storage-location erc7201:sashaflores.storage.Blog
-    struct BlogStorage {
-        uint256 premiumFee;
-    }
+    struct BlogStorage { uint256 premiumFee; }
+
 
     function _getBlogStorage() private pure returns (BlogStorage storage $) {
         assembly {
@@ -35,7 +34,6 @@ contract Blog is IBlog, Initializable, UUPSUpgradeable, OwnableUpgradeable, Paus
     bytes32 public constant PREMIUM = bytes32(uint256(2));
 
     
-
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -108,12 +106,22 @@ contract Blog is IBlog, Initializable, UUPSUpgradeable, OwnableUpgradeable, Paus
 
 
     function withdraw(address payable des) external virtual onlyOwner nonReentrant {
-        if(balance() == 0) revert EmptyBalance();
 
-        (bool success, ) = des.call{value: balance()}("");
-        if(!success) revert WithdrawalFailedNoData();
+        uint256 bal = address(this).balance;
+        if(bal == 0) revert EmptyBalance();
 
-        emit FundsWithdrawn(des, balance());
+        (bool success, bytes memory returnData) = des.call{value: bal}("");
+        
+        if (!success) {
+            if (des.code.length > 0 && returnData.length > 0) {
+                assembly {
+                    revert(add(returnData, 32), mload(returnData))
+                }
+            } else {
+                revert WithdrawalFailedNoData();
+            }
+        }
+        emit FundsWithdrawn(des, bal);
     }
 
 
@@ -124,10 +132,13 @@ contract Blog is IBlog, Initializable, UUPSUpgradeable, OwnableUpgradeable, Paus
 
     function _setPremiumFee(uint256 newFee) internal virtual {
         BlogStorage storage $ = _getBlogStorage();
-        if($.premiumFee == newFee || newFee == 0) {
-            revert InvalidNewFee();
-        }
+        if($.premiumFee == newFee || newFee == 0) revert InvalidNewFee();
         $.premiumFee = newFee;
+    }
+
+    function _setURI(string memory newuri) internal virtual override {
+        require(bytes(newuri).length > 0, EmptyURI());
+        super._setURI(newuri);
     }
    
 
@@ -142,13 +153,14 @@ contract Blog is IBlog, Initializable, UUPSUpgradeable, OwnableUpgradeable, Paus
         whenNotPaused
         override(ERC1155Upgradeable, ERC1155SupplyUpgradeable)
     {
-        super._update(from, to, ids, values);
 
-        for(uint256 i = 0; i < ids.length; i++) {
-            if (ids[i] == uint256(PREMIUM) ) {
-                require(from == address(0), "NonTransferrable()");
+        for(uint256 id = 0; id < ids.length; id ++) {
+            if (ids[id] == uint256(PREMIUM) ) {
+                require(from == address(0), NonTransferrable());
             }
         }
+
+        super._update(from, to, ids, values);
     }
 
     function stringsEqual(string memory a, string memory b) private pure returns (bool) {

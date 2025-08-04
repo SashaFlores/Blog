@@ -1,23 +1,17 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.28;
+pragma solidity 0.8.30;
 
 import { Test } from "forge-std/Test.sol";
-import { Blog } from "../src/Blog.sol";
-import { UnsafeUpgrades } from "openzeppelin-foundry-upgrades/Upgrades.sol";
+import { SetupTest } from "./Setup.t.sol";
 import { Vm } from "forge-std/Vm.sol";
+import { UnsafeUpgrades } from "openzeppelin-foundry-upgrades/Upgrades.sol";
 
 
-contract TestSetupTest is Test {
+contract TestSetupTest is Test, SetupTest {
 
 
-    function test_DeploymentEmitsExpectedEvents() public {
-        vm.recordLogs();
 
-        address implementation = address(new Blog());
-        address proxy = UnsafeUpgrades.deployUUPSProxy(
-            implementation,
-            abi.encodeCall(Blog.__Blog_init, (address(this), 0.01 ether, "https://example.com/metadata/"))
-        );
+    function test_deploymentEmitsExpectedEvents() public {
 
 
         Vm.Log[] memory entries = vm.getRecordedLogs();

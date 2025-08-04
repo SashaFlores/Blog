@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.28;
+pragma solidity ^0.8.30;
 
 interface IBlog {
 
@@ -10,6 +10,7 @@ interface IBlog {
     error InvalidTokenId();
     error NonTransferrable();
     error ContractNameChanged();
+    error EmptyURI();
 
     event FundsReceived(address indexed sender, uint256 amount);
     event FundsWithdrawn(address indexed recipient, uint256 amount);
