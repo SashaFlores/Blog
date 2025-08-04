@@ -4,6 +4,6 @@ pragma solidity 0.8.30;
 contract RevertingReceiver {
     
     receive() external payable {
-        revert("Reverted Silently");
+        revert("Reverted Data");
     }
 }

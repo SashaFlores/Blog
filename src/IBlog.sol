@@ -10,6 +10,7 @@ interface IBlog {
     error InvalidTokenId();
     error NonTransferrable();
     error ContractNameChanged();
+    error UpdateVersionToUpgrade();
     error EmptyURI();
 
     event FundsReceived(address indexed sender, uint256 amount);
@@ -28,4 +29,6 @@ interface IBlog {
     function modifyURI(string memory newuri) external;
     function version() external pure returns (string memory);
     function contractName() external pure returns (string memory);
+    function PREMIUM() external pure returns (bytes32);
+    function STANDARD() external pure returns (bytes32);
 }

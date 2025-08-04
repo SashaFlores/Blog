@@ -7,9 +7,9 @@ import { UnsafeUpgrades } from "openzeppelin-foundry-upgrades/Upgrades.sol";
 import { OwnableUpgradeable } from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import { PausableUpgradeable } from "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
 import { SetupTest } from "./Setup.t.sol";
-import { IBlog } from "../src/IBlog.sol";
-import {RevertingReceiver} from "./mocks/RevertingReceiver.sol";
-import { SilentRejector } from "./mocks/SilentRejector.sol";
+import { IBlog } from "../../src/IBlog.sol";
+import {RevertingReceiver} from "../mocks/RevertingReceiver.sol";
+import { SilentRejector } from "../mocks/SilentRejector.sol";
 
 
 contract OwnerTest is Test, SetupTest {
@@ -230,7 +230,7 @@ contract OwnerTest is Test, SetupTest {
 
         RevertingReceiver revertingReceiver = new RevertingReceiver();
 
-        vm.expectRevert("Reverted Silently");
+        vm.expectRevert("Reverted Data");
         blog.withdraw(payable(address(revertingReceiver)));
 
         assertEq(address(revertingReceiver).balance, 0);

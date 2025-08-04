@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.30;
 
-import { Test } from "forge-std/Test.sol";
+
 import { SetupTest } from "./Setup.t.sol";
 import { Vm } from "forge-std/Vm.sol";
-import { UnsafeUpgrades } from "openzeppelin-foundry-upgrades/Upgrades.sol";
 
 
-contract TestSetupTest is Test, SetupTest {
+
+contract TestSetupTest is SetupTest {
 
 
 

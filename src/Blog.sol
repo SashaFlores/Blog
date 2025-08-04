@@ -50,16 +50,17 @@ contract Blog is IBlog, Initializable, UUPSUpgradeable, OwnableUpgradeable, Paus
         __UUPSUpgradeable_init();
         __Blog_init_unchained(premiumFee);
     }
+    
 
     function __Blog_init_unchained(uint256 premiumFee) internal virtual onlyInitializing {
         _setPremiumFee(premiumFee);
     }
 
-    function version() public pure virtual returns(string memory) {
+    function version() external pure virtual returns(string memory) {
         return "1.0.0";
     }
 
-    function contractName() public pure virtual returns(string memory) {
+    function contractName() external pure virtual returns(string memory) {
         return "Blog";
     }
 
@@ -111,7 +112,7 @@ contract Blog is IBlog, Initializable, UUPSUpgradeable, OwnableUpgradeable, Paus
         if(bal == 0) revert EmptyBalance();
 
         (bool success, bytes memory returnData) = des.call{value: bal}("");
-        
+
         if (!success) {
             if (des.code.length > 0 && returnData.length > 0) {
                 assembly {
@@ -142,8 +143,9 @@ contract Blog is IBlog, Initializable, UUPSUpgradeable, OwnableUpgradeable, Paus
     }
    
 
-    function _authorizeUpgrade(address newImplementation) internal override onlyOwner {
-        require(stringsEqual(IBlog(newImplementation).contractName(), contractName()), ContractNameChanged());
+    function _authorizeUpgrade(address newImplementation) internal virtual override onlyOwner {
+        require(stringsEqual(IBlog(newImplementation).contractName(), this.contractName()), ContractNameChanged());
+        require(!stringsEqual(IBlog(newImplementation).version(), this.version()), UpdateVersionToUpgrade());
     }
     
 
