@@ -2,20 +2,14 @@
 pragma solidity 0.8.30;
 
 
-import { SetupTest } from "./Setup.t.sol";
+import { Setup } from "./Setup.t.sol";
 import { Vm } from "forge-std/Vm.sol";
 
-
-
-contract TestSetupTest is SetupTest {
-
-
+contract TestSetup is Setup {
 
     function test_deploymentEmitsExpectedEvents() public {
 
-
         Vm.Log[] memory entries = vm.getRecordedLogs();
-
 
         // Track events
         bool ownershipTransferredFound;
@@ -30,7 +24,7 @@ contract TestSetupTest is SetupTest {
                 log.topics.length == 3 &&
                 log.topics[0] == keccak256("OwnershipTransferred(address,address)") &&
                 address(uint160(uint256(log.topics[1]))) == address(0) &&
-                address(uint160(uint256(log.topics[2]))) == address(this)
+                address(uint160(uint256(log.topics[2]))) == msg.sender
             ) {
                 ownershipTransferredFound = true;
             }

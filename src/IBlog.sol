@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
+import { IERC1155 } from "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
+
 interface IBlog {
 
     error InvalidNewFee();
@@ -18,17 +20,15 @@ interface IBlog {
     event PremiumReceived(address indexed sender, string tokenURI);
 
     
+    function balance() external view returns (uint256);
+    function getPremiumFee() external view returns (uint256);
+    function version() external pure returns (string memory);
+    function contractName() external pure returns (string memory);
     function mint() external payable;
     function mintPremium(string calldata tokenURI) external payable;
-    function getPremiumFee() external view returns (uint256);
-    function balance() external view returns (uint256);
     function pause() external;
     function unpause() external;
     function withdraw(address payable des) external;
     function updatePremiumFee(uint256 newFee) external;
     function modifyURI(string memory newuri) external;
-    function version() external pure returns (string memory);
-    function contractName() external pure returns (string memory);
-    function PREMIUM() external pure returns (bytes32);
-    function STANDARD() external pure returns (bytes32);
 }

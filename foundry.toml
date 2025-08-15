@@ -41,9 +41,16 @@ number_underscore = 'preserve'
 single_line_statement_blocks = 'preserve'
 ignore = ["src/console.sol", "src/console2.sol"]
 
-auto_detect_remappings = true
+
 remappings = [
     "forge-std/=lib/forge-std/src",
     "@openzeppelin/contracts/=lib/openzeppelin-contracts-upgradeable/lib/openzeppelin-contracts/contracts",
+    "@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts"
 ]
+
+[rpc_endpoints]
+sepolia = "${SEPOLIA_RPC}"
+
+[etherscan]
+sepolia = { key = "${ETHERSCAN_API_KEY}" }
 
