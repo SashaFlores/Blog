@@ -1,11 +1,14 @@
 -include .env
 
-.PHONY: all test clean deploy fund help install snapshot format anvil zktest
+.PHONY: all test clean deploy fund help install snapshot format anvil 
 
-DEFAULT_ANVIL_KEY := 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+DEFAULT_ANVIL_KEY := 0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38
 
 format:
 	forge fmt 
+
+snapshot:
+	forge snapshot
 
 clean:
 	forge clean
@@ -16,13 +19,26 @@ update:
 build:
 	forge build
 
-test-forked:
-	forge test --fork-url $(MAINNET_RPC_URL) -vvvv
+install:
 
-snapshot:
-	forge snapshot
+	forge install foundry-rs/forge-std@latest --no-commit && forge install OpenZeppelin/openzeppelin-contracts-upgradeable@latest --no-commit 
+	&& forge install OpenZeppelin/openzeppelin-foundry-upgrades@latest --no-commit
 
-NETWORK_ARGS := -rpc-url http://localhost:8545 --private-key $(DEFAULT_ANVIL_KEY) --broadcast
+remove : 
+	rm -rf .gitmodules && rm -rf .git/modules/* && rm -rf lib && touch .gitmodules && git add . && git commit -m "modules"
 
-deploy-mainnet:
-	forge script script/Deploy.s.sol:DeployScript --rpc-url $(MAINNET_RPC_URL) --private-key $(MAINNET_PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(ETHERSCAN_API_KEY) -vvvv
+deploy-fork:
+	@forge script script/DeployBlog.s.sol:DeployBlog --fork-url ${SEPOLIA_RPC} --account testnetsDeployer --broadcast -vvvv
+
+deploy-sepolia:
+	@forge script script/DeployBlog.s.sol:DeployBlog --rpc-url ${SEPOLIA_RPC} --account testnetsDeployer --broadcast --verify --etherscan-api-key ${ETHERSCAN_API_KEY} -vvvv
+
+deploy-ethereum:
+	@forge script script/DeployBlog.s.sol:DeployBlog --rpc-url $(ETHEREUM_RPC) --account mainnetsDeployer --broadcast --verify --etherscan-api-key ${ETHERSCAN_API_KEY} -vvvv
+
+deploy-amoy:
+	@forge script script/DeployBlog.s.sol:DeployBlog --rpc-url $(AMOY_RPC) --account testnetsDeployer --broadcast --verify --etherscan-api-key ${POLYGONSCAN_API_KEY} -vvvv
+
+deploy-polygon:
+	@forge script script/DeployBlog.s.sol:DeployBlog --rpc-url $(POLYGON_RPC) --account mainnetsDeployer --broadcast --verify --etherscan-api-key ${POLYGONSCAN_API_KEY} -vvvv
+

@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.30;
 
-import { Setup } from "./Setup.t.sol";
-import { console } from "forge-std/Script.sol";
-import { UnsafeUpgrades } from "openzeppelin-foundry-upgrades/Upgrades.sol";
-import { SilentRejector } from "../mocks/SilentRejector.sol";
-import { RevertingReceiver } from "../mocks/RevertingReceiver.sol";
-
+import { RevertingReceiver } from '../mocks/RevertingReceiver.sol';
+import { SilentRejector } from '../mocks/SilentRejector.sol';
+import { Setup } from './Setup.t.sol';
+import { console } from 'forge-std/Script.sol';
+import { UnsafeUpgrades } from 'openzeppelin-foundry-upgrades/Upgrades.sol';
 
 error OwnableUnauthorizedAccount(address account);
 
@@ -32,12 +31,9 @@ event Paused(address account);
 
 event Unpaused(address account);
 
-
-
 contract Owner is Setup {
 
-
-    function test_initialOwner() public view{
+    function test_initialOwner() public view {
         assertEq(blog.owner(), msg.sender);
     }
 
@@ -47,47 +43,48 @@ contract Owner is Setup {
 
     function testRevert_transferOwnership_toZeroAddress() public {
         vm.prank(msg.sender);
-        vm.expectRevert(abi.encodeWithSelector(OwnableInvalidOwner.selector, address(0x00)));
+        vm.expectRevert(
+            abi.encodeWithSelector(OwnableInvalidOwner.selector, address(0x00))
+        );
         blog.transferOwnership(address(0x00));
     }
 
     function testEmits_whenOwner_transferOwnership_elseReverts() public {
         // notOwner -> msg.sender `owner`
         vm.prank(notOwner);
-        vm.expectRevert(abi.encodeWithSelector(OwnableUnauthorizedAccount.selector, notOwner));
+        vm.expectRevert(
+            abi.encodeWithSelector(OwnableUnauthorizedAccount.selector, notOwner)
+        );
         blog.transferOwnership(msg.sender);
         assertEq(blog.owner(), msg.sender);
 
-        
         vm.expectEmit(true, true, false, false);
         emit OwnershipTransferred(msg.sender, notOwner);
 
         vm.prank(msg.sender);
         blog.transferOwnership(notOwner);
         assertEq(blog.owner(), notOwner);
-
     }
 
     function testEmits_ownershipTransferred_whenOwnerRenounces() public {
-
         vm.prank(notOwner);
-        vm.expectRevert(abi.encodeWithSelector(OwnableUnauthorizedAccount.selector, notOwner));
+        vm.expectRevert(
+            abi.encodeWithSelector(OwnableUnauthorizedAccount.selector, notOwner)
+        );
         blog.renounceOwnership();
         assertTrue(blog.owner() == msg.sender);
 
-
         vm.expectEmit(true, true, false, false);
         emit OwnershipTransferred(msg.sender, address(0));
-        
+
         vm.prank(msg.sender);
         blog.renounceOwnership();
         assertEq(blog.owner(), address(0));
     }
 
     function test_onlyOwnerFunctions_changeFee() public {
-
         assertEq(blog.getPremiumFee(), premiumFee);
-        
+
         uint256 newFee = 0.02 ether;
 
         vm.prank(msg.sender);
@@ -97,7 +94,9 @@ contract Owner is Setup {
 
         // not owner reverts
         uint256 notOwnerFee = 1 ether;
-        vm.expectRevert(abi.encodeWithSelector(OwnableUnauthorizedAccount.selector, notOwner));
+        vm.expectRevert(
+            abi.encodeWithSelector(OwnableUnauthorizedAccount.selector, notOwner)
+        );
         vm.prank(notOwner);
         blog.updatePremiumFee(notOwnerFee);
 
@@ -107,16 +106,17 @@ contract Owner is Setup {
     function testRevert_onlyOwnerChangeURI() public {
         assertEq(blog.uri(0), URI);
 
-        string memory newURI = "https://new.example.com/metadata/";
+        string memory newURI = 'https://new.example.com/metadata/';
 
         vm.prank(notOwner);
 
-        vm.expectRevert(abi.encodeWithSelector(OwnableUnauthorizedAccount.selector, notOwner));
+        vm.expectRevert(
+            abi.encodeWithSelector(OwnableUnauthorizedAccount.selector, notOwner)
+        );
         blog.modifyURI(newURI);
     }
 
     function test_onlyOwner_withdrawsFunds() public {
-
         vm.deal(address(blog), 1 ether);
         assertEq(blog.balance(), 1 ether);
 
@@ -129,18 +129,18 @@ contract Owner is Setup {
         assertEq(notOwner.balance, 1 ether);
         assertEq(blog.balance(), 0);
 
-
         vm.deal(address(blog), 10 ether);
 
         vm.prank(notOwner);
-        vm.expectRevert(abi.encodeWithSelector(OwnableUnauthorizedAccount.selector, notOwner));
+        vm.expectRevert(
+            abi.encodeWithSelector(OwnableUnauthorizedAccount.selector, notOwner)
+        );
         blog.withdraw(payable(notOwner));
-        
+
         assertEq(blog.balance(), 10 ether);
     }
 
     function test_whenPaused_ownerCanWithdrawAndChangeFee() public {
-
         assertEq(blog.getPremiumFee(), premiumFee);
 
         vm.deal(address(blog), 1 ether);
@@ -178,7 +178,6 @@ contract Owner is Setup {
     }
 
     function testRevert_withdrawFunction_whenBalanceIsZero() public {
-
         assertEq(blog.balance(), 0);
 
         vm.prank(msg.sender);
@@ -201,11 +200,12 @@ contract Owner is Setup {
         assertTrue(blog.paused());
 
         vm.prank(notOwner);
-        vm.expectRevert(abi.encodeWithSelector(OwnableUnauthorizedAccount.selector, notOwner));
+        vm.expectRevert(
+            abi.encodeWithSelector(OwnableUnauthorizedAccount.selector, notOwner)
+        );
         blog.unpause();
         assertTrue(blog.paused());
 
-        
         vm.expectEmit(false, false, false, true);
         emit Unpaused(msg.sender);
 
@@ -226,7 +226,7 @@ contract Owner is Setup {
         vm.expectRevert(EnforcedPause.selector);
         blog.pause();
 
-        // unpause 
+        // unpause
         assertTrue(blog.paused());
         blog.unpause();
 
@@ -245,7 +245,7 @@ contract Owner is Setup {
 
         vm.prank(msg.sender);
 
-        vm.expectRevert("Reverted Data");
+        vm.expectRevert('Reverted Data');
         blog.withdraw(payable(address(revertingReceiver)));
 
         assertEq(address(revertingReceiver).balance, 0);
@@ -270,7 +270,7 @@ contract Owner is Setup {
         vm.prank(msg.sender);
 
         vm.expectRevert(EmptyURI.selector);
-        blog.modifyURI("");
+        blog.modifyURI('');
     }
 
 }
