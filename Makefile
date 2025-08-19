@@ -21,8 +21,8 @@ build:
 
 install:
 
-	forge install foundry-rs/forge-std@latest --no-commit && forge install OpenZeppelin/openzeppelin-contracts-upgradeable@latest --no-commit 
-	&& forge install OpenZeppelin/openzeppelin-foundry-upgrades@latest --no-commit
+	forge install foundry-rs/forge-std && forge install OpenZeppelin/openzeppelin-contracts-upgradeable
+	&& forge install OpenZeppelin/openzeppelin-foundry-upgrades
 
 remove : 
 	rm -rf .gitmodules && rm -rf .git/modules/* && rm -rf lib && touch .gitmodules && git add . && git commit -m "modules"
