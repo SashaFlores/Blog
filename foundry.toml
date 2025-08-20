@@ -36,14 +36,11 @@ single_line_statement_blocks = 'preserve'
 number_underscore = 'thousands'
 override_spacing = false
 
-
 [fuzz]
 runs = 10_000
 max_test_rejects = 50_000
 dictionary_weight = 50
 include_storage = true
-
-
 
 remappings = [
     'forge-std/=lib/forge-std/src',
