@@ -47,7 +47,7 @@ contract Blog is
         _disableInitializers();
     }
 
-    /// @custom:oz-upgrades-unsafe-allow initializer
+
     function __Blog_init(
         address initialOwner,
         uint256 premiumFee,

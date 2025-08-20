@@ -21,14 +21,10 @@ build:
 
 install:
 
-	forge install foundry-rs/forge-std@v1.10.0 && forge install OpenZeppelin/openzeppelin-contracts-upgradeable@v5.4.0
-	&& forge install OpenZeppelin/openzeppelin-foundry-upgrades@v0.4.0 && forge install Cyfrin/foundry-devops@v0.4.0
+	forge install foundry-rs/forge-std@v1.10.0 && forge install OpenZeppelin/openzeppelin-contracts-upgradeable@v5.4.0 && forge install OpenZeppelin/openzeppelin-foundry-upgrades@v0.4.0 && forge install Cyfrin/foundry-devops
 
 remove : 
 	rm -rf .gitmodules && rm -rf .git/modules/* && rm -rf lib && touch .gitmodules && git add . && git commit -m "modules"
-
-deploy-fork:
-	@forge script script/DeployBlog.s.sol:DeployBlog --fork-url ${SEPOLIA_RPC} --account testnetsDeployer --broadcast -vvvv
 
 deploy-sepolia:
 	@forge script script/DeployBlog.s.sol:DeployBlog --rpc-url ${SEPOLIA_RPC} --account testnetsDeployer --broadcast --verify --etherscan-api-key ${ETHERSCAN_API_KEY} -vvvv
