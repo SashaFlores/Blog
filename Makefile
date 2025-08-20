@@ -21,8 +21,8 @@ build:
 
 install:
 
-	forge install foundry-rs/forge-std && forge install OpenZeppelin/openzeppelin-contracts-upgradeable
-	&& forge install OpenZeppelin/openzeppelin-foundry-upgrades
+	forge install foundry-rs/forge-std@v1.10.0 && forge install OpenZeppelin/openzeppelin-contracts-upgradeable@v5.4.0
+	&& forge install OpenZeppelin/openzeppelin-foundry-upgrades@v0.4.0 && forge install Cyfrin/foundry-devops@v0.4.0
 
 remove : 
 	rm -rf .gitmodules && rm -rf .git/modules/* && rm -rf lib && touch .gitmodules && git add . && git commit -m "modules"

@@ -3,9 +3,6 @@ pragma solidity 0.8.30;
 
 library Constants {
 
-    struct Testnets {
-        uint256 chainId;
-    }
 
     string internal constant URI = 'https://www.sashaflores.xyz/blog';
 

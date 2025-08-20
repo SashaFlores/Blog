@@ -9,7 +9,6 @@ interface IBlog {
 }
 
 /// @custom:oz-upgrades-from Blog
-/// @custom:oz-upgrades-to MockBlogFailureUpgrade
 contract MockBlogFailureUpgrade is IBlog {
 
     /// @notice Keep the same name so the first check passes

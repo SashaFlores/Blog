@@ -12,7 +12,7 @@ import { PausableUpgradeable } from '@openzeppelin/contracts-upgradeable/utils/P
 import { ReentrancyGuardUpgradeable } from '@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol';
 import { IERC165 } from '@openzeppelin/contracts/utils/introspection/IERC165.sol';
 
-
+/// @custom:oz-upgrades
 contract Blog is
     Initializable,
     IBlog,
@@ -47,7 +47,7 @@ contract Blog is
         _disableInitializers();
     }
 
-    // /// @custom:oz-upgrades-unsafe-allow initializer
+    /// @custom:oz-upgrades-unsafe-allow initializer
     function __Blog_init(
         address initialOwner,
         uint256 premiumFee,
