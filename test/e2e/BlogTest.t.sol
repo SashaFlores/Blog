@@ -164,11 +164,6 @@ contract BlogTest is Test {
     }
 
 
-
-
-
-
-
     // test mint premium token if no fess paid and with fees 
     // and when paused and no transfer is allowed at all times and the event of uri is emitted correctly
     // test withdraw premium fees when paused and not paused
