@@ -4,7 +4,7 @@
 
 DEFAULT_ANVIL_KEY := 0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38
 
-format:
+fmt:
 	forge fmt 
 
 snapshot:

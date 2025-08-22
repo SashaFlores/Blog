@@ -43,18 +43,14 @@ contract Owner is Setup {
 
     function testRevert_transferOwnership_toZeroAddress() public {
         vm.prank(msg.sender);
-        vm.expectRevert(
-            abi.encodeWithSelector(OwnableInvalidOwner.selector, address(0x00))
-        );
+        vm.expectRevert(abi.encodeWithSelector(OwnableInvalidOwner.selector, address(0x00)));
         blog.transferOwnership(address(0x00));
     }
 
     function testEmits_whenOwner_transferOwnership_elseReverts() public {
         // notOwner -> msg.sender `owner`
         vm.prank(notOwner);
-        vm.expectRevert(
-            abi.encodeWithSelector(OwnableUnauthorizedAccount.selector, notOwner)
-        );
+        vm.expectRevert(abi.encodeWithSelector(OwnableUnauthorizedAccount.selector, notOwner));
         blog.transferOwnership(msg.sender);
         assertEq(blog.owner(), msg.sender);
 
@@ -68,9 +64,7 @@ contract Owner is Setup {
 
     function testEmits_ownershipTransferred_whenOwnerRenounces() public {
         vm.prank(notOwner);
-        vm.expectRevert(
-            abi.encodeWithSelector(OwnableUnauthorizedAccount.selector, notOwner)
-        );
+        vm.expectRevert(abi.encodeWithSelector(OwnableUnauthorizedAccount.selector, notOwner));
         blog.renounceOwnership();
         assertTrue(blog.owner() == msg.sender);
 
@@ -94,9 +88,7 @@ contract Owner is Setup {
 
         // not owner reverts
         uint256 notOwnerFee = 1 ether;
-        vm.expectRevert(
-            abi.encodeWithSelector(OwnableUnauthorizedAccount.selector, notOwner)
-        );
+        vm.expectRevert(abi.encodeWithSelector(OwnableUnauthorizedAccount.selector, notOwner));
         vm.prank(notOwner);
         blog.updatePremiumFee(notOwnerFee);
 
@@ -110,9 +102,7 @@ contract Owner is Setup {
 
         vm.prank(notOwner);
 
-        vm.expectRevert(
-            abi.encodeWithSelector(OwnableUnauthorizedAccount.selector, notOwner)
-        );
+        vm.expectRevert(abi.encodeWithSelector(OwnableUnauthorizedAccount.selector, notOwner));
         blog.modifyURI(newURI);
     }
 
@@ -132,9 +122,7 @@ contract Owner is Setup {
         vm.deal(address(blog), 10 ether);
 
         vm.prank(notOwner);
-        vm.expectRevert(
-            abi.encodeWithSelector(OwnableUnauthorizedAccount.selector, notOwner)
-        );
+        vm.expectRevert(abi.encodeWithSelector(OwnableUnauthorizedAccount.selector, notOwner));
         blog.withdraw(payable(notOwner));
 
         assertEq(blog.balance(), 10 ether);
@@ -200,9 +188,7 @@ contract Owner is Setup {
         assertTrue(blog.paused());
 
         vm.prank(notOwner);
-        vm.expectRevert(
-            abi.encodeWithSelector(OwnableUnauthorizedAccount.selector, notOwner)
-        );
+        vm.expectRevert(abi.encodeWithSelector(OwnableUnauthorizedAccount.selector, notOwner));
         blog.unpause();
         assertTrue(blog.paused());
 

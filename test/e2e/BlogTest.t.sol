@@ -1,46 +1,42 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.30;
 
-import { DeployBlog } from 'script/DeployBlog.s.sol';
-import { Upgrades } from 'openzeppelin-foundry-upgrades/Upgrades.sol';
-import { Blog, IBlog } from 'src/Blog.sol';
-import { Test, console } from 'forge-std/Test.sol';
-import { Vm } from 'forge-std/Vm.sol';
+import { MockMinter, MockMinterMissingHolder } from '../mocks/MockMinter.sol';
+import { Initializable } from '@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol';
 import { PausableUpgradeable } from '@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol';
 import { IERC1155Errors } from '@openzeppelin/contracts/interfaces/draft-IERC6093.sol';
-import { Initializable } from '@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol';
-import { MockMinter, MockMinterMissingHolder } from '../mocks/MockMinter.sol';
-import {BlogV2} from 'script/mocks/BlogV2.sol';
+import { Test, console } from 'forge-std/Test.sol';
+import { Vm } from 'forge-std/Vm.sol';
+import { Upgrades } from 'openzeppelin-foundry-upgrades/Upgrades.sol';
+import { DeployBlog } from 'script/DeployBlog.s.sol';
 
-
+import { BlogV2 } from 'script/mocks/BlogV2.sol';
+import { Blog, IBlog } from 'src/Blog.sol';
 
 event Upgraded(address indexed implementation);
-event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
-event Initialized(uint64 version);
-event TransferSingle(
-    address indexed operator,
-    address indexed from,
-    address indexed to,
-    uint256 id,
-    uint256 value
-);
-event Paused(address account);
-event Unpaused(address account);
-event FundsReceived(address indexed sender, uint256 amount);
-event PremiumReceived(address indexed sender, string tokenURI);
-event FundsWithdrawn(address indexed recipient, uint256 amount);
 
+event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+event Initialized(uint64 version);
+
+event TransferSingle(address indexed operator, address indexed from, address indexed to, uint256 id, uint256 value);
+
+event Paused(address account);
+
+event Unpaused(address account);
+
+event FundsReceived(address indexed sender, uint256 amount);
+
+event PremiumReceived(address indexed sender, string tokenURI);
+
+event FundsWithdrawn(address indexed recipient, uint256 amount);
 
 contract BlogTest is Test {
 
     Blog public blog;
     address public implementation;
-    address public proxy;
-
 
     function setUp() external {
-
-
         vm.recordLogs();
 
         vm.createSelectFork(vm.rpcUrl('ethereum'));
@@ -50,13 +46,11 @@ contract BlogTest is Test {
 
         blog = Blog(payable(_proxy));
         implementation = impl;
-        proxy = _proxy;
     }
 
     // [x] test deployment of Blog contract
     // [x] test initial values of contract
     function testDeployment_Success() external view {
-
         address initialOwner = vm.envAddress('OWNER');
 
         assertEq(blog.version(), '1.0.0');
@@ -69,28 +63,25 @@ contract BlogTest is Test {
     // [x] check logs emitters' addresses
     // [x] check logs topic and data
     function testEventsEmittedInDeployment() external {
-
         Vm.Log[] memory logs = vm.getRecordedLogs();
 
         assertEq(logs.length, 4);
 
         bytes32 upgradedEventSignature = keccak256('Upgraded(address)');
         bytes32 ownershipTransferredEventSignature = keccak256('OwnershipTransferred(address,address)');
-        bytes32 initializedEventSignature = keccak256('Initialized(uint64)'); 
+        bytes32 initializedEventSignature = keccak256('Initialized(uint64)');
 
         assertEq(logs[0].topics[0], initializedEventSignature);
         assertEq(logs[1].topics[0], upgradedEventSignature);
         assertEq(logs[2].topics[0], ownershipTransferredEventSignature);
         assertEq(logs[3].topics[0], initializedEventSignature);
 
-
         assertEq(logs[0].emitter, implementation);
         assertEq(logs[1].emitter, address(blog));
         assertEq(logs[2].emitter, address(blog));
         assertEq(logs[3].emitter, address(blog));
 
-
-        assertEq(abi.decode(logs[0].data, (uint64)), type(uint64).max); 
+        assertEq(abi.decode(logs[0].data, (uint64)), type(uint64).max);
         assertEq(logs[1].topics[1], bytes32(uint256(uint160((implementation)))));
         assertEq(logs[2].topics[1], bytes32(uint256(uint160(address(0x00)))));
         assertEq(logs[2].topics[2], bytes32(uint256(uint160(blog.owner()))));
@@ -105,20 +96,19 @@ contract BlogTest is Test {
         blog.__Blog_init(owner, 1 ether, 'www.example.com/uri');
     }
 
-    // [x] test mint standard token with & without donation 
-    // [x] test mint all tokens when paused and not paused 
+    // [x] test mint standard token with & without donation
+    // [x] test mint all tokens when paused and not paused
     // [x] test transfer standard when paused and not paused
     // [x] test mint premium with and without fees
     // [x] test non transferrable premium token
     // [x] test withdraw when paused and not paused
     function testMintAndTransferAllTokensWhenReceiverIsAccount() external {
-
         address minter = makeAddr('minter');
 
         vm.expectEmit(true, true, true, true);
         emit TransferSingle(minter, address(0x00), minter, uint256(blog.STANDARD()), 1);
         vm.prank(minter);
-        blog.mint();    
+        blog.mint();
         assertEq(blog.balanceOf(minter, uint256(blog.STANDARD())), 1);
         assertEq(blog.totalSupply(uint256(blog.STANDARD())), 1);
 
@@ -135,13 +125,11 @@ contract BlogTest is Test {
         blog.mint();
         assertEq(blog.balanceOf(minter, uint256(blog.STANDARD())), 1);
 
-        
         vm.expectEmit(false, false, false, true);
         emit Unpaused(blog.owner());
         vm.prank(blog.owner());
         blog.unpause();
         assertFalse(blog.paused());
-
 
         uint256 initialContractBalance = address(blog).balance;
 
@@ -150,7 +138,7 @@ contract BlogTest is Test {
         vm.expectEmit(true, true, true, true);
         emit TransferSingle(minter, address(0x00), minter, uint256(blog.STANDARD()), 1);
 
-        blog.mint{value: 1 ether}();
+        blog.mint{ value: 1 ether }();
         assertEq(blog.balanceOf(minter, uint256(blog.STANDARD())), 2);
         assertEq(blog.totalSupply(uint256(blog.STANDARD())), 2);
 
@@ -172,7 +160,7 @@ contract BlogTest is Test {
 
         blog.withdraw(payable(address(0x002)));
         assertEq(address(blog).balance, 0);
-    
+
         vm.stopPrank();
 
         address premiumMinter = makeAddr('premiumMinter');
@@ -186,7 +174,6 @@ contract BlogTest is Test {
         blog.mintPremium('https://example.com/premium-token');
         assertEq(blog.balanceOf(premiumMinter, uint256(blog.PREMIUM())), 0);
 
-        
         vm.expectEmit(false, false, false, true);
         emit Unpaused(blog.owner());
         vm.prank(blog.owner());
@@ -205,11 +192,10 @@ contract BlogTest is Test {
         vm.expectEmit(true, false, false, true);
         emit PremiumReceived(premiumMinter, 'https://example.com/premium-token');
 
-        blog.mintPremium{value: premiumFee}('https://example.com/premium-token');
+        blog.mintPremium{ value: premiumFee }('https://example.com/premium-token');
         assertEq(blog.balanceOf(premiumMinter, uint256(blog.PREMIUM())), 1);
         assertEq(blog.totalSupply(uint256(blog.PREMIUM())), 1);
 
-        
         vm.stopPrank();
 
         vm.prank(blog.owner());
@@ -217,14 +203,12 @@ contract BlogTest is Test {
         assertEq(address(blog).balance, 0);
     }
 
-
     // [x] test mint all tokens when receiver is contract
     // [x] test receiver if implementing IERC1155Receiver
     // [x] test receiver if not implementing IERC1155Receiver
     // [x] test emission of correct event when minting premium token
     // test withdraw premium fees when paused and not paused
     function testMintAndTransferAllTokensWhenReceiverIsContract() external {
-
         uint256 premiumFee = blog.getPremiumFee();
 
         uint256 contractInitialBalance = blog.balance();
@@ -233,7 +217,9 @@ contract BlogTest is Test {
         MockMinterMissingHolder mockMinterMissingHolder = new MockMinterMissingHolder(address(blog));
 
         vm.prank(address(mockMinterMissingHolder));
-        vm.expectRevert(abi.encodeWithSelector(IERC1155Errors.ERC1155InvalidReceiver.selector, address(mockMinterMissingHolder)));
+        vm.expectRevert(
+            abi.encodeWithSelector(IERC1155Errors.ERC1155InvalidReceiver.selector, address(mockMinterMissingHolder))
+        );
         blog.mint();
         assertEq(blog.balanceOf(address(mockMinterMissingHolder), uint256(blog.STANDARD())), 0);
 
@@ -250,7 +236,7 @@ contract BlogTest is Test {
         vm.prank(address(mockMinterMissingHolder));
         blog.mintPremium('https://example.com/premium-token');
         assertEq(blog.balanceOf(address(mockMinterMissingHolder), uint256(blog.PREMIUM())), 0);
-        
+
         vm.prank(address(blog.owner()));
         blog.unpause();
         assertFalse(blog.paused());
@@ -268,8 +254,7 @@ contract BlogTest is Test {
         vm.expectEmit(true, false, false, true);
         emit PremiumReceived(address(mockMinter), 'https://example.com/premium-token');
 
-
-        blog.mintPremium{value: premiumFee}('https://example.com/premium-token');
+        blog.mintPremium{ value: premiumFee }('https://example.com/premium-token');
         assertEq(blog.balanceOf(address(mockMinter), uint256(blog.PREMIUM())), 1);
         assertEq(blog.totalSupply(uint256(blog.PREMIUM())), 1);
         assertEq(address(blog).balance, contractInitialBalance + premiumFee);
@@ -302,13 +287,11 @@ contract BlogTest is Test {
         assertEq(blog.version(), '1.0.0');
         assertEq(blog.contractName(), 'Blog');
 
-
         vm.startPrank(owner);
-
 
         Upgrades.upgradeProxy(address(blog), 'BlogV2.sol', '', owner);
 
-        address secondImplementation = Upgrades.getImplementationAddress(proxy);
+        address secondImplementation = Upgrades.getImplementationAddress(address(blog));
         assertTrue(secondImplementation != address(0));
         assertTrue(secondImplementation != implementation);
         console.log('Blog Upgraded Successfully Implementation Address:', secondImplementation);
@@ -322,7 +305,7 @@ contract BlogTest is Test {
         // version
         assertEq(blogV2.version(), '1.1.0');
 
-        // name 
+        // name
         assertEq(blogV2.contractName(), 'Blog');
 
         // withdraw modified to be accessible when not paused
@@ -340,7 +323,6 @@ contract BlogTest is Test {
 
         blogV2.unpause();
         assertFalse(blogV2.paused());
-
 
         vm.expectEmit(true, false, false, true);
         emit FundsWithdrawn(withdrawer, 2 ether);

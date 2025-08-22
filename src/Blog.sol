@@ -6,11 +6,10 @@ import { OwnableUpgradeable } from '@openzeppelin/contracts-upgradeable/access/O
 import { Initializable } from '@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol';
 import { UUPSUpgradeable } from '@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol';
 import { ERC1155Upgradeable } from '@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol';
-import { ERC1155SupplyUpgradeable } from '@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/ERC1155SupplyUpgradeable.sol';
+import { ERC1155SupplyUpgradeable } from'@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/ERC1155SupplyUpgradeable.sol';
 import { PausableUpgradeable } from '@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol';
 import { ReentrancyGuardUpgradeable } from '@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol';
 import { IERC165 } from '@openzeppelin/contracts/utils/introspection/IERC165.sol';
-
 
 contract Blog is
     Initializable,
@@ -37,8 +36,6 @@ contract Blog is
         }
     }
 
-    
-
     // Define constants for token types
     bytes32 public constant STANDARD = bytes32(uint256(1));
     bytes32 public constant PREMIUM = bytes32(uint256(2));
@@ -48,12 +45,7 @@ contract Blog is
         _disableInitializers();
     }
 
-
-    function __Blog_init(
-        address initialOwner,
-        uint256 premiumFee,
-        string calldata _uri
-    ) public virtual initializer {
+    function __Blog_init(address initialOwner, uint256 premiumFee, string calldata _uri) public virtual initializer {
         __ERC1155_init(_uri);
         __ERC1155Supply_init();
         __Ownable_init(initialOwner);
@@ -72,8 +64,7 @@ contract Blog is
     function supportsInterface(
         bytes4 interfaceId
     ) public view override(ERC1155Upgradeable, IERC165) returns (bool) {
-        return
-            interfaceId == type(IBlog).interfaceId || super.supportsInterface(interfaceId);
+        return interfaceId == type(IBlog).interfaceId || super.supportsInterface(interfaceId);
     }
 
     function version() external pure virtual returns (string memory) {
@@ -105,20 +96,18 @@ contract Blog is
         return address(this).balance;
     }
 
-    function modifyURI(
-        string memory newuri
-    ) external virtual onlyOwner {
+    function modifyURI(string memory newuri) external virtual onlyOwner {
         _setURI(newuri);
     }
 
-    function mint() external payable virtual whenNotPaused nonReentrant {
+    function mint() external payable virtual nonReentrant whenNotPaused {
         _mint(_msgSender(), uint256(STANDARD), 1, '');
         if (msg.value > 0) emit FundsReceived(_msgSender(), msg.value);
     }
 
     function mintPremium(
         string calldata tokenURI
-    ) public payable virtual whenNotPaused nonReentrant {
+    ) public payable virtual nonReentrant whenNotPaused {
         uint256 fee = getPremiumFee();
         require(msg.value >= fee, LessThanPremiumFee(fee));
 
@@ -129,7 +118,7 @@ contract Blog is
 
     function withdraw(
         address payable des
-    ) external virtual onlyOwner nonReentrant {
+    ) external virtual nonReentrant onlyOwner {
         uint256 bal = address(this).balance;
         if (bal == 0) revert EmptyBalance();
 
@@ -137,7 +126,7 @@ contract Blog is
 
         if (!success) {
             if (des.code.length > 0 && returnData.length > 0) {
-                assembly ('memory-safe') {
+                assembly ("memory-safe") {
                     revert(add(returnData, 32), mload(returnData))
                 }
             } else {
@@ -171,14 +160,8 @@ contract Blog is
     function _authorizeUpgrade(
         address newImplementation
     ) internal virtual override onlyOwner {
-        require(
-            stringsEqual(IBlog(newImplementation).contractName(), this.contractName()),
-            ContractNameChanged()
-        );
-        require(
-            !stringsEqual(IBlog(newImplementation).version(), this.version()),
-            UpdateVersionToUpgrade()
-        );
+        require(stringsEqual(IBlog(newImplementation).contractName(), this.contractName()), ContractNameChanged());
+        require(!stringsEqual(IBlog(newImplementation).version(), this.version()), UpdateVersionToUpgrade());
     }
 
     function _update(
@@ -186,12 +169,7 @@ contract Blog is
         address to,
         uint256[] memory ids,
         uint256[] memory values
-    )
-        internal
-        virtual
-        override(ERC1155Upgradeable, ERC1155SupplyUpgradeable)
-        whenNotPaused
-    {
+    ) internal virtual override(ERC1155Upgradeable, ERC1155SupplyUpgradeable) whenNotPaused {
         super._update(from, to, ids, values);
 
         for (uint256 i = 0; i < ids.length; ++i) {

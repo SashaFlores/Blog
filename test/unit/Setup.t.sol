@@ -28,8 +28,7 @@ contract Setup is Test {
 
         implementation = address(new Blog());
         address proxy = UnsafeUpgrades.deployUUPSProxy(
-            implementation,
-            abi.encodeCall(Blog.__Blog_init, (msg.sender, premiumFee, URI))
+            implementation, abi.encodeCall(Blog.__Blog_init, (msg.sender, premiumFee, URI))
         );
 
         blog = Blog(payable(proxy));

@@ -13,13 +13,7 @@ error LessThanPremiumFee(uint256 requiredFee);
 
 event FundsReceived(address indexed sender, uint256 amount);
 
-event TransferSingle(
-    address indexed operator,
-    address indexed from,
-    address indexed to,
-    uint256 id,
-    uint256 value
-);
+event TransferSingle(address indexed operator, address indexed from, address indexed to, uint256 id, uint256 value);
 
 event PremiumReceived(address indexed sender, string tokenURI);
 
@@ -27,9 +21,7 @@ contract Balances is Setup {
 
     function test_mintStandard_withDonation() public {
         vm.expectEmit(true, true, true, true);
-        emit TransferSingle(
-            standardUser, address(0x00), standardUser, uint256(blog.STANDARD()), 1
-        );
+        emit TransferSingle(standardUser, address(0x00), standardUser, uint256(blog.STANDARD()), 1);
 
         vm.expectEmit(true, false, false, true);
         emit FundsReceived(standardUser, 0.01 ether);
@@ -46,9 +38,7 @@ contract Balances is Setup {
 
     function test_mintStandard_free() public {
         vm.expectEmit(true, true, true, true);
-        emit TransferSingle(
-            standardUser, address(0x00), standardUser, uint256(blog.STANDARD()), 1
-        );
+        emit TransferSingle(standardUser, address(0x00), standardUser, uint256(blog.STANDARD()), 1);
 
         vm.prank(standardUser);
         blog.mint();
@@ -70,14 +60,11 @@ contract Balances is Setup {
 
     function test_emitsRightURIEvent_premiumToken() public {
         vm.expectEmit(true, true, false, true);
-        emit TransferSingle(
-            premiumUser, address(0x00), premiumUser, uint256(blog.PREMIUM()), 1
-        );
+        emit TransferSingle(premiumUser, address(0x00), premiumUser, uint256(blog.PREMIUM()), 1);
 
         vm.expectEmit(true, false, false, true);
         emit PremiumReceived(
-            premiumUser,
-            'https://www.sashaflores.xyz/articles/optimization-of-gas-and-bytecode-limitation'
+            premiumUser, 'https://www.sashaflores.xyz/articles/optimization-of-gas-and-bytecode-limitation'
         );
 
         vm.prank(premiumUser);
@@ -165,17 +152,13 @@ contract Balances is Setup {
         vm.startPrank(standardUser);
 
         vm.expectEmit(true, true, true, true);
-        emit TransferSingle(
-            standardUser, address(0x00), standardUser, uint256(blog.STANDARD()), 1
-        );
+        emit TransferSingle(standardUser, address(0x00), standardUser, uint256(blog.STANDARD()), 1);
         blog.mint();
 
         assertEq(blog.balanceOf(standardUser, uint256(blog.STANDARD())), 1);
 
         vm.expectEmit(true, true, true, true);
-        emit TransferSingle(
-            standardUser, standardUser, notOwner, uint256(blog.STANDARD()), 1
-        );
+        emit TransferSingle(standardUser, standardUser, notOwner, uint256(blog.STANDARD()), 1);
         blog.safeTransferFrom(standardUser, notOwner, uint256(blog.STANDARD()), 1, '');
 
         assertEq(blog.balanceOf(standardUser, uint256(blog.STANDARD())), 0);

@@ -12,6 +12,11 @@ out/
 docs/
 coverage
 
+# Reports
+report.md
+.gas-snapshot
+slither-report.md
+
 
 # Dotenv file
 .env

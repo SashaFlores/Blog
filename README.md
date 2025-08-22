@@ -1,83 +1,24 @@
-# Blog Articles
+# Blog Articles – Web3 Gated Content
 
-This repository is the web3 component of my portfolio, where readers can voluntarily mint an NFT for free for standard articles, while premium comprehensive tutorials will cost a small fee to grant reader access to code.
+This repository is the web3 component of my portfolio, where readers can mint a **free NFT** for standard posts and pay a small fee; currently in native coin only for premium tutorials to unlock code access. ERC-4337 (card/fiat → crypto) is on the roadmap.
 
 
-### Current Blockchains:
+STILL WORK IN PROGRESS
 
-- Ethereum
 
-- Polygon
+## Tools and Frameworks used 
 
-- Binance
+- [Foundry](https://book.getfoundry.sh/)
+- [Substreams from The Graph](https://thegraph.com/substreams/)
+- [GitHub Actions](https://github.com/features/actions)
+- [Slither](https://github.com/crytic/slither)
+- [Slither GitHub](https://github.com/marketplace/actions/slither-action)
+- [Mythril](https://github.com/ConsenSysDiligence/mythril)
+- [Aderyn from Cyfrin](https://cyfrin.gitbook.io/cyfrin-docs/aderyn-cli/installation)
 
-- Base
 
-Only native coin of each blockchain is the accepted way of payment, soon expect implementing ERC 4337 to accept USD as a mean of payment.
 
-## Foundry
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
 
-Foundry consists of:
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
 
-## Documentation
-
-https://book.getfoundry.sh/
-
-## Usage
-
-### Build
-
-```shell
-$ forge build
-```
-
-### Test
-
-```shell
-$ forge test
-```
-
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```

@@ -23,8 +23,7 @@ contract TestSetup is Setup {
 
             // OwnershipTransferred
             if (
-                log.topics.length == 3
-                    && log.topics[0] == keccak256('OwnershipTransferred(address,address)')
+                log.topics.length == 3 && log.topics[0] == keccak256('OwnershipTransferred(address,address)')
                     && address(uint160(uint256(log.topics[1]))) == address(0)
                     && address(uint160(uint256(log.topics[2]))) == msg.sender
             ) {
@@ -41,8 +40,7 @@ contract TestSetup is Setup {
 
             // Initialized
             if (
-                log.topics.length == 1
-                    && log.topics[0] == keccak256('Initialized(uint64)')
+                log.topics.length == 1 && log.topics[0] == keccak256('Initialized(uint64)')
                     && abi.decode(log.data, (uint64)) == 1
             ) {
                 initializedFound = true;

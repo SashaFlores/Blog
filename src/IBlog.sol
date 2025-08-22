@@ -9,7 +9,6 @@ interface IBlog is IERC165 {
     error EmptyBalance();
     error WithdrawalFailedNoData();
     error LessThanPremiumFee(uint256 requiredFee);
-    error InvalidTokenId();
     error NonTransferrable();
     error ContractNameChanged();
     error UpdateVersionToUpgrade();
@@ -19,11 +18,7 @@ interface IBlog is IERC165 {
     event FundsWithdrawn(address indexed recipient, uint256 amount);
     event PremiumReceived(address indexed sender, string tokenURI);
 
-    function __Blog_init(
-        address initialOwner,
-        uint256 premiumFee,
-        string calldata _uri
-    ) external;
+    function __Blog_init(address initialOwner, uint256 premiumFee, string calldata _uri) external;
     function balance() external view returns (uint256);
     function getPremiumFee() external view returns (uint256);
     function version() external pure returns (string memory);

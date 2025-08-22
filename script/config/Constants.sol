@@ -3,7 +3,6 @@ pragma solidity 0.8.30;
 
 library Constants {
 
-
     string internal constant URI = 'https://www.sashaflores.xyz/blog';
 
     uint256 internal constant SEPOLIA_CHAIN_ID = 11_155_111;
