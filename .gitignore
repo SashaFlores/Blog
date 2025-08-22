@@ -16,3 +16,5 @@ coverage
 # Dotenv file
 .env
 notes.md
+
+node_modules/

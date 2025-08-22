@@ -29,5 +29,4 @@ contract DeployBlog is Script {
 
         return (proxy, implementation);
     }
-
 }

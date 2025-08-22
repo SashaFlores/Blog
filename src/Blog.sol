@@ -2,7 +2,6 @@
 pragma solidity 0.8.30;
 
 import { IBlog } from './IBlog.sol';
-
 import { OwnableUpgradeable } from '@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol';
 import { Initializable } from '@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol';
 import { UUPSUpgradeable } from '@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol';
@@ -12,7 +11,7 @@ import { PausableUpgradeable } from '@openzeppelin/contracts-upgradeable/utils/P
 import { ReentrancyGuardUpgradeable } from '@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol';
 import { IERC165 } from '@openzeppelin/contracts/utils/introspection/IERC165.sol';
 
-/// @custom:oz-upgrades
+
 contract Blog is
     Initializable,
     IBlog,
@@ -29,14 +28,16 @@ contract Blog is
         uint256 premiumFee;
     }
 
+    // keccak256(abi.encode(uint256(keccak256("sashaflores.storage.Blog")) - 1)) & ~bytes32(uint256(0xff))
+    bytes32 private constant BlogStorageLocation = 0xd8bb604eb75c19d7b5da195a10139ccc9ca74bf453bffef10737af641b552500;
+
     function _getBlogStorage() private pure returns (BlogStorage storage $) {
         assembly {
             $.slot := BlogStorageLocation
         }
     }
 
-    // keccak256(abi.encode(uint256(keccak256("sashaflores.storage.Blog")) - 1)) & ~bytes32(uint256(0xff))
-    bytes32 private constant BlogStorageLocation = 0xd8bb604eb75c19d7b5da195a10139ccc9ca74bf453bffef10737af641b552500;
+    
 
     // Define constants for token types
     bytes32 public constant STANDARD = bytes32(uint256(1));
@@ -136,7 +137,7 @@ contract Blog is
 
         if (!success) {
             if (des.code.length > 0 && returnData.length > 0) {
-                assembly {
+                assembly ('memory-safe') {
                     revert(add(returnData, 32), mload(returnData))
                 }
             } else {
