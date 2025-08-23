@@ -21,5 +21,6 @@ slither-report.md
 # Dotenv file
 .env
 notes.md
+BUSINESS-MODEL.md
 
 node_modules/
