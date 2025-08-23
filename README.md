@@ -39,12 +39,11 @@ repository_dispatch: grant_access and adds the GitHub user as a collaborator (re
 
 <!-- ![Flowchart](./images/flowchart.jpg) -->
 <!-- <img src="./images/flowchart.jpg" width="700" alt="Flowchart"> -->
-<div align="center">
-  <figure>
-    <img src="./images/flowchart.jpg" width="700" alt="Flowchart">
-    <figcaption><em>Flowchart from mint → GitHub invite.</em></figcaption>
-  </figure>
-</div>
+<p align="center">
+  <img src="./images/flowchart.jpg" width="700" alt="Flowchart"><br>
+  <em>Flowchart from mint → GitHub invite.</em>
+</p>
+
 
 
 
