@@ -1,0 +1,26 @@
+name: Commit Message Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, edited, reopened]
+
+jobs:
+  lint-commit-messages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run commit message validator
+        shell: bash
+        run: |
+          chmod +x scripts/verify-commit-msg.sh
+          git fetch origin "${{ github.base_ref }}" --depth=1
+          git log FETCH_HEAD..HEAD --pretty=%B |
+            while IFS= read -r commit_msg; do
+              if [[ -z "$commit_msg" ]]; then
+                continue
+              fi
+              if ! scripts/verify-commit-msg.sh <(printf '%s\n' "$commit_msg"); then
+                exit 1
+              fi
+            done

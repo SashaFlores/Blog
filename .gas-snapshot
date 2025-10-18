@@ -1,5 +1,0 @@
-BlogTest:testDeployment_Success() (gas: 20819)
-BlogTest:testEventsEmittedInDeployment() (gas: 26420)
-BlogTest:testMintAndTransferAllTokensWhenReceiverIsAccount() (gas: 323435)
-BlogTest:testMintAndTransferAllTokensWhenReceiverIsContract() (gas: 822363)
-BlogTest:testUpgradeToBlogV2Successfully() (gas: 22638346)

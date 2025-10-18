@@ -55,6 +55,15 @@ repository_dispatch: grant_access and adds the GitHub user as a collaborator (re
 3. Automates per-tutorial GitHub access via GitHub Actions, by inviting the mapped GitHub handle to the specific private repository referenced by tokenURI.
 
 
+## Repository Layout
+
+- `solidity/` — Foundry project for the Blog ERC1155 contracts, audits, and scripts.
+- `rust/` — Anchor workspace with its Cargo, programs, and tests at the folder root.
+- `cairo/` — Placeholder for the Starknet Scarb project.
+
+Each project owns its own environment files (for example, `solidity/.env`), deployments, and toolchain configs.
+
+
 ## Tools and Frameworks used 
 
 - [Foundry](https://book.getfoundry.sh/)
@@ -69,8 +78,3 @@ repository_dispatch: grant_access and adds the GitHub user as a collaborator (re
 ## Roadmap:
 
 ERC-4337 (card/fiat → crypto) is on the roadmap.
-
-
-
-
-

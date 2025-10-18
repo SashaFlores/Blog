@@ -18,8 +18,9 @@ report.md
 slither-report.md
 
 
-# Dotenv file
+# Dotenv files
 .env
+solidity/.env
 notes.md
 BUSINESS-MODEL.md
 
