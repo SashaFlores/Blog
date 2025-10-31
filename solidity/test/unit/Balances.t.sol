@@ -2,8 +2,7 @@
 pragma solidity 0.8.30;
 
 import { Setup } from './Setup.t.sol';
-import { console } from 'forge-std/Script.sol';
-import { UnsafeUpgrades } from 'openzeppelin-foundry-upgrades/Upgrades.sol';
+
 
 error NonTransferrable();
 

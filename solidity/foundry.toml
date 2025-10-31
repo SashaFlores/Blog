@@ -20,7 +20,7 @@ fs_permissions = [
 ]
 
 [lint]
-exclude_lints = ['mixed-case-function', 'screaming-snake-case-constant']   
+exclude_lints = ['mixed-case-function', 'screaming-snake-case-const']
 
 [profile.optimized]
 via_ir = true
@@ -46,9 +46,19 @@ out = 'out-via-ir'
 
 [fuzz]
 runs = 10_000
-max_test_rejects = 50_000
-dictionary_weight = 50
+max_test_rejects = 100_000
+dictionary_weight = 60
 include_storage = true
+
+[invariant]
+runs = 1_000
+depth = 500
+timeout = 300
+dictionary_weight = 80
+max_assume_rejects = 65_536
+show_edge_coverage = true
+show_metrics = true
+show_solidity = true
 
 remappings = [
     'forge-std/=lib/forge-std/src',
@@ -67,4 +77,3 @@ sepolia = { key = '${ETHERSCAN_API_KEY}' }
 ethereum = { key = '${ETHERSCAN_API_KEY}' }
 amoy = { key = '${POLYGONSCAN_API_KEY}' }
 polygon = { key = '${POLYGONSCAN_API_KEY}' }
-

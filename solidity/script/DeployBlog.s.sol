@@ -5,7 +5,7 @@ import { ChainConfig } from './config/ChainConfig.sol';
 import { Constants } from './config/Constants.sol';
 import { Script, console } from 'forge-std/Script.sol';
 import { Upgrades } from 'openzeppelin-foundry-upgrades/Upgrades.sol';
-import { Blog, IBlog } from 'src/Blog.sol';
+import { Blog } from 'src/Blog.sol';
 
 contract DeployBlog is Script {
 

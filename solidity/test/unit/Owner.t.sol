@@ -4,8 +4,7 @@ pragma solidity 0.8.30;
 import { RevertingReceiver } from '../mocks/RevertingReceiver.sol';
 import { SilentRejector } from '../mocks/SilentRejector.sol';
 import { Setup } from './Setup.t.sol';
-import { console } from 'forge-std/Script.sol';
-import { UnsafeUpgrades } from 'openzeppelin-foundry-upgrades/Upgrades.sol';
+
 
 error OwnableUnauthorizedAccount(address account);
 
@@ -103,7 +102,7 @@ contract Owner is Setup {
         vm.prank(notOwner);
 
         vm.expectRevert(abi.encodeWithSelector(OwnableUnauthorizedAccount.selector, notOwner));
-        blog.modifyURI(newURI);
+        blog.modifyUri(newURI);
     }
 
     function test_onlyOwner_withdrawsFunds() public {
@@ -256,7 +255,7 @@ contract Owner is Setup {
         vm.prank(msg.sender);
 
         vm.expectRevert(EmptyURI.selector);
-        blog.modifyURI('');
+        blog.modifyUri('');
     }
 
 }

@@ -70,7 +70,7 @@ contract BlogV2 is
         return address(this).balance;
     }
 
-    // === NEW FUNCTION (read-only; no storage change) BUT NOT ADDED TO IBLOG ===
+    // === NEW FUNCTION (read-only; no storage change) BUT NOT ADDED TO IBlog ===
     function isPremiumHolder(
         address who
     ) external view returns (bool) {
@@ -91,10 +91,10 @@ contract BlogV2 is
         _unpause();
     }
 
-    function modifyURI(
-        string memory newuri
+    function modifyUri(
+        string memory newUri
     ) external override onlyOwner {
-        _setURI(newuri);
+        _setURI(newUri);
     }
 
     function updatePremiumFee(
@@ -141,10 +141,10 @@ contract BlogV2 is
 
     // === INTERNALS (same logic as V1 for URI + nontransferable premium) ===
     function _setURI(
-        string memory newuri
+        string memory newUri
     ) internal override {
-        require(bytes(newuri).length > 0, EmptyURI());
-        super._setURI(newuri);
+        require(bytes(newUri).length > 0, EmptyURI());
+        super._setURI(newUri);
     }
 
     function _update(

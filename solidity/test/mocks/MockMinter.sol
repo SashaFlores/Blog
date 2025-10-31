@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.30;
 
-import { ERC1155 } from '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
+
 import { ERC1155Holder } from '@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol';
-import { Blog, IBlog } from 'src/Blog.sol';
+import { IBlog } from 'src/Blog.sol';
 
 contract MockMinterMissingHolder {
 

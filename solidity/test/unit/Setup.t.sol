@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.30;
 
-import { Test, console } from 'forge-std/Test.sol';
+import { Test } from 'forge-std/Test.sol';
 import { Vm } from 'forge-std/Vm.sol';
 import { UnsafeUpgrades } from 'openzeppelin-foundry-upgrades/Upgrades.sol';
 import { Blog } from 'src/Blog.sol';
@@ -19,7 +19,7 @@ contract Setup is Test {
     address public premiumUser;
     address public standardUser;
 
-    function setUp() public {
+    function setUp() public virtual {
         notOwner = makeAddr('notOwner');
         premiumUser = makeAddr('premiumUser');
         standardUser = makeAddr('standardUser');
@@ -33,9 +33,6 @@ contract Setup is Test {
 
         blog = Blog(payable(proxy));
 
-        // console.log("Blog contract address", address(blog));
-        // console.log("Test address", address(this));
-        // console.log("Owner Address", msg.sender);
     }
 
 }

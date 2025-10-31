@@ -27,7 +27,9 @@ contract Blog is
         uint256 premiumFee;
     }
 
+    
     // keccak256(abi.encode(uint256(keccak256("sashaflores.storage.Blog")) - 1)) & ~bytes32(uint256(0xff))
+    // aderyn-ignore-next-line(unused-state-variable)
     bytes32 private constant BlogStorageLocation = 0xd8bb604eb75c19d7b5da195a10139ccc9ca74bf453bffef10737af641b552500;
 
     function _getBlogStorage() private pure returns (BlogStorage storage $) {
@@ -84,10 +86,12 @@ contract Blog is
         emit FundsReceived(_msgSender(), msg.value);
     }
 
+    // aderyn-ignore-next-line(centralization-risk)
     function pause() external virtual onlyOwner {
         _pause();
     }
 
+    // aderyn-ignore-next-line(centralization-risk)
     function unpause() external virtual onlyOwner {
         _unpause();
     }
@@ -96,8 +100,9 @@ contract Blog is
         return address(this).balance;
     }
 
-    function modifyURI(string memory newuri) external virtual onlyOwner {
-        _setURI(newuri);
+    // aderyn-fp-next-line(state-change-without-event, centralization-risk)
+    function modifyUri(string memory newUri) external virtual onlyOwner {
+        _setURI(newUri);
     }
 
     function mint() external payable virtual nonReentrant whenNotPaused {
@@ -116,9 +121,8 @@ contract Blog is
         emit PremiumReceived(_msgSender(), tokenURI);
     }
 
-    function withdraw(
-        address payable des
-    ) external virtual nonReentrant onlyOwner {
+    // aderyn-ignore-next-line(centralization-risk)
+    function withdraw(address payable des) external virtual nonReentrant onlyOwner {
         uint256 bal = address(this).balance;
         if (bal == 0) revert EmptyBalance();
 
@@ -136,9 +140,8 @@ contract Blog is
         emit FundsWithdrawn(des, bal);
     }
 
-    function updatePremiumFee(
-        uint256 newFee
-    ) external virtual onlyOwner {
+    // aderyn-ignore-next-line(centralization-risk, state-change-without-event)
+    function updatePremiumFee(uint256 newFee) external virtual onlyOwner {
         _setPremiumFee(newFee);
     }
 
@@ -151,15 +154,14 @@ contract Blog is
     }
 
     function _setURI(
-        string memory newuri
+        string memory newUri
     ) internal virtual override {
-        require(bytes(newuri).length > 0, EmptyURI());
-        super._setURI(newuri);
+        require(bytes(newUri).length > 0, EmptyURI());
+        super._setURI(newUri);
     }
 
-    function _authorizeUpgrade(
-        address newImplementation
-    ) internal virtual override onlyOwner {
+    // aderyn-ignore-next-line(centralization-risk)
+    function _authorizeUpgrade(address newImplementation) internal virtual override onlyOwner {
         require(stringsEqual(IBlog(newImplementation).contractName(), this.contractName()), ContractNameChanged());
         require(!stringsEqual(IBlog(newImplementation).version(), this.version()), UpdateVersionToUpgrade());
     }
@@ -169,13 +171,20 @@ contract Blog is
         address to,
         uint256[] memory ids,
         uint256[] memory values
-    ) internal virtual override(ERC1155Upgradeable, ERC1155SupplyUpgradeable) whenNotPaused {
+    ) internal virtual override(
+        ERC1155Upgradeable, 
+        ERC1155SupplyUpgradeable
+    ) whenNotPaused {
         super._update(from, to, ids, values);
 
+        bool attemptedPremiumTransfer;
         for (uint256 i = 0; i < ids.length; ++i) {
             if (ids[i] == uint256(PREMIUM) && from != address(0)) {
-                revert NonTransferrable();
+                attemptedPremiumTransfer = true;
             }
+        }
+        if (attemptedPremiumTransfer) {
+            revert NonTransferrable();
         }
     }
 

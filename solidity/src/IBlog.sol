@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.30;
+pragma solidity 0.8.30;
 
 import { IERC165 } from '@openzeppelin/contracts/utils/introspection/IERC165.sol';
 
@@ -29,6 +29,6 @@ interface IBlog is IERC165 {
     function unpause() external;
     function withdraw(address payable des) external;
     function updatePremiumFee(uint256 newFee) external;
-    function modifyURI(string memory newuri) external;
+    function modifyUri(string memory newUri) external;
 
 }
