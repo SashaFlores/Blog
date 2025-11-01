@@ -226,24 +226,12 @@ pub mod blog {
             .ok_or(BlogError::EmptyBalance)?;
         require!(amount > 0, BlogError::EmptyBalance);
 
-        let authority_key = state.authority;
-        let bump_seed = [state.bump];
-        let signer_seeds = [
-            BlogState::SEED_PREFIX,
-            authority_key.as_ref(),
-            &bump_seed[..],
-        ];
-        system_program::transfer(
-            CpiContext::new_with_signer(
-                ctx.accounts.system_program.to_account_info(),
-                SystemTransfer {
-                    from: ctx.accounts.blog_state.to_account_info(),
-                    to: ctx.accounts.recipient.to_account_info(),
-                },
-                &[&signer_seeds],
-            ),
-            amount,
-        )?;
+        **ctx
+            .accounts
+            .blog_state
+            .to_account_info()
+            .try_borrow_mut_lamports()? -= amount;
+        **ctx.accounts.recipient.try_borrow_mut_lamports()? += amount;
 
         emit!(FundsWithdrawn {
             recipient: ctx.accounts.recipient.key(),
